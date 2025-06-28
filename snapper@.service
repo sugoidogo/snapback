@@ -1,0 +1,5 @@
+[Service]
+Type=exec
+ExecStartPre=-btrfs subvolume create %I
+ExecStartPre=-snapper --config %i create-config %I --template snapback
+ExecStart=snapper --config %i create --cleanup-algorithm number
