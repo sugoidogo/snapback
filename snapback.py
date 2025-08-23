@@ -6,46 +6,32 @@ import logging.handlers
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
-handler = logging.handlers.SysLogHandler(address = '/dev/log')
+log.addHandler(logging.handlers.SysLogHandler(address='/dev/log'))
+log.addHandler(logging.FileHandler('/etc/snapback/log.txt', mode='w'))
 
-log.addHandler(handler)
+try:
+    from tomllib import load
+    from sys import argv
+    from subprocess import check_call
+    from datetime import datetime
 
-class StreamToLogger(object):
-    """
-    Fake file-like stream object that redirects writes to a logger instance.
-    """
-    def __init__(self, logger, level):
-       self.logger = logger
-       self.level = level
-       self.linebuf = ''
+    with open('/etc/snapback/config.toml', 'rb') as file:
+        config = load(file)
 
-    def write(self, buf):
-       for line in buf.rstrip().splitlines():
-          self.logger.log(self.level, line.rstrip())
+    event = argv[1]
 
-    def flush(self):
-        pass
+    if event == 'create-snapshot-post':
+        subvolume = argv[2]
+        fstype = argv[3]
+        number = argv[4]
+        destination = datetime.now().strftime(config[subvolume])
+        check_call(['tar',
+                    f'--directory={subvolume}/.snapshots/{number}/snapshot',
+                    '--create', '--file', destination,
+                    '--auto-compress', '--dereference', '.'
+                    ])
 
-sys.stdout=StreamToLogger(log,logging.INFO)
-sys.stderr=StreamToLogger(log,logging.ERROR)
-
-from tomllib import load
-from sys import argv
-from subprocess import check_call
-from datetime import datetime
-
-with open('/etc/snapback/config.toml','rb') as file:
-    config=load(file)
-
-event=argv[1]
-
-if event == 'create-snapshot-post':
-    subvolume=argv[2]
-    fstype=argv[3]
-    number=argv[4]
-    destination=datetime.now().strftime(config[subvolume])
-    check_call(['tar',
-        f'--directory={subvolume}/.snapshots/{number}/snapshot',
-        '--create','--file',destination,
-        '--auto-compress','--dereference','.'
-    ],stdout=sys.stdout,stderr=sys.stdout)
+except Exception as e:
+    import traceback
+    log.error(traceback.format_exc())
+    raise e
