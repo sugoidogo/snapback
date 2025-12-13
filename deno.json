@@ -3,6 +3,7 @@
     "nodeModulesDir": "none",
     "compile": {
         "permissions": {
+            "read": true,
             "write": true,
             "run": ["tar","chmod"]
         }
