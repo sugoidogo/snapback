@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^25.0.1",
+    "@types/strftime": "^0.9.8",
+    "deno": "^2.6.0",
+    "jsr": "^0.13.5"
+  },
+  "dependencies": {
+    "@std/fs": "npm:@jsr/std__fs@^1.0.20",
+    "commander": "^14.0.2",
+    "confbox": "^0.2.2",
+    "strftime": "^0.10.3"
+  }
+}
