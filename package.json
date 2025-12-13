@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "compile": "deno compile --include src/snapper-template.txt --include src/snapper@.service --output snapback --allow-all src/main.ts"
+  },
   "devDependencies": {
     "@types/node": "^25.0.1",
     "@types/strftime": "^0.9.8",
