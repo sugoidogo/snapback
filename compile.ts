@@ -18,6 +18,6 @@ for (const target of targets) {
         '--include', 'src/snapper-template.txt',
         '--include', 'src/snapper@.service',
         '--output', 'dist/snapback-'+target,
-        'src/main.ts'
+        '--permission-set','src/main.ts'
     )
 }

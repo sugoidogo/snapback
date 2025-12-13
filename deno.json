@@ -1,4 +1,10 @@
 {
     "$schema": "https://raw.githubusercontent.com/denoland/deno/refs/heads/main/cli/schemas/config-file.v1.json",
-    "nodeModulesDir":"none"
+    "nodeModulesDir": "none",
+    "compile": {
+        "permissions": {
+            "write": true,
+            "run": ["tar","chmod"]
+        }
+    }
 }
