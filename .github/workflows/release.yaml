@@ -25,4 +25,4 @@ jobs:
         with:
           make_latest: true
           body_path: changelog.txt
-          files: snapback
+          files: dist/*
