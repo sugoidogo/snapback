@@ -34,14 +34,13 @@ program.command('*').description('snapback ignores unknown commands')
 
 program.command('install').description('installs snapback on your system')
     .action(function () {
-        let lib_snapper = '/usr/libexec/snapper'
-        if (!fs.existsSync(lib_snapper)) lib_snapper = '/usr/lib/snapper'
-        console.debug(`${import.meta.url} will be moved to ${lib_snapper}/99-snapback`)
         const template = fs.readFileSync(import.meta.dirname + '/snapper-template.txt')
         const service = fs.readFileSync(import.meta.dirname + '/snapper@.service')
-        fs.writeFileSync('/etc/systemd/system/snapper@.service', service, 'utf8')
+        let lib_snapper = '/usr/libexec/snapper'
+        if (!fs.existsSync(lib_snapper)) lib_snapper = '/usr/lib/snapper'
         if (!fs.existsSync('/etc/snapper/config-templates')) fs.mkdirSync('/etc/snapper/config-templates')
         fs.writeFileSync('/etc/snapper/config-templates/snapback', template, 'utf8')
+        fs.writeFileSync('/etc/systemd/system/snapper@.service', service, 'utf8')
         fs.mkdirSync(lib_snapper + '/plugins', { recursive: true })
         fs.renameSync(import.meta.url, lib_snapper + '/plugins/99-snapback')
         sugoiSpawn('chmod', '+x', lib_snapper + '/plugins/99-snapback')
